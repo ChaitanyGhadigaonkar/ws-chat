@@ -7,9 +7,10 @@ import cookieSession from "cookie-session";
 
 dotenv.config();
 
-import { connectToDatabase } from "./db/db";
 import "./config/passportConfig";
+import { connectToDatabase } from "./db/db";
 import authRouter from "./routes/auth.route";
+import errorHandler from "./middlewares/errorHandler.middleware";
 
 const PORT = process.env.PORT || 8000;
 
@@ -52,6 +53,8 @@ app.get("/", async (req, res) => {
   res.send("Welcome");
 });
 app.use("/api/auth", authRouter);
+
+app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
   connectToDatabase();

@@ -7,6 +7,7 @@ CREATE TABLE users (
 	password TEXT,
 	profile_picture TEXT,
 	status status DEFAULT 'offline',
+	third_party_login BOOLEAN NOT NULL,
 	last_seen TIMESTAMP,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -14,11 +15,13 @@ CREATE TABLE users (
 INSERT INTO users (
 	name,
 	email,
-	password
+	password,
+	third_party_login
 ) VALUES (
 	'CHINMAY GHADIGONKAR',
 	'CHINMAY@GMAIL.COM',
-	'PASSWORD'
+	'PASSWORD',
+	FALSE
 );
 
 SELECT * FROM users;
