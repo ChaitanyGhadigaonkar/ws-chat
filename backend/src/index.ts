@@ -11,6 +11,7 @@ import "./config/passportConfig";
 import { connectToDatabase } from "./db/db";
 import authRouter from "./routes/auth.route";
 import errorHandler from "./middlewares/errorHandler.middleware";
+import ServerManager from "./managers/serverManager";
 
 const PORT = process.env.PORT || 8000;
 
@@ -61,7 +62,7 @@ const server = app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
 
-const wss = new WebSocketServer({ server });
+const wss = ServerManager.getServer(server);
 
 wss.on("connection", (socket) => {
   console.log("New connection");
