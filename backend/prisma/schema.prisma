@@ -13,15 +13,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ROLE {
+  ADMIN
+  USER
+}
+
+enum MESSAGE_TYPE {
+  TEXT
+  IMAGE
+  FILE
+}
+
 model User {
-  id              String   @id @default(uuid())
+  id              String            @id @default(uuid())
   name            String
-  email           String   @unique
+  email           String            @unique
   password        String?
   thirdPartyLogin Boolean
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   Profile         Profile?
+  Conversation    Conversation[]
+  Participant     Participant[]
+  Message         Message[]
+  MessageReaction MessageReaction[]
 }
 
 model Profile {
@@ -31,4 +46,104 @@ model Profile {
   lastSeen  DateTime @updatedAt
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Conversation {
+  id            String        @id @default(uuid())
+  creatorId     String
+  title         String?
+  isGroup       Boolean
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  lastMessageAt DateTime?
+  creator       User          @relation(references: [id], fields: [creatorId])
+  Participant   Participant[]
+  Message       Message[]
+}
+
+model Participant {
+  id                String       @id @default(uuid())
+  conversationId    String
+  userId            String
+  joinedAt          DateTime     @default(now())
+  leftAt            DateTime?
+  role              ROLE
+  isMuted           Boolean      @default(false)
+  lastReadMessageId String
+  conversation      Conversation @relation(references: [id], fields: [conversationId])
+  user              User         @relation(references: [id], fields: [userId])
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id                    String                  @id @default(uuid())
+  conversationId        String
+  senderId              String
+  messageType           MESSAGE_TYPE
+  content               String
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  isDeleted             Boolean                 @default(false)
+  parentId              String?
+  conversation          Conversation            @relation(references: [id], fields: [conversationId])
+  sender                User                    @relation(references: [id], fields: [senderId])
+  parent                Message?                @relation("ChildMessages", fields: [parentId], references: [id])
+  ChildMessages         Message[]               @relation("ChildMessages")
+  MessageDeliveryStatus MessageDeliveryStatus[]
+  Attachment            Attachment[]
+  MessageReaction       MessageReaction[]
+}
+
+model MessageDeliveryStatus {
+  id          String   @id @default(uuid())
+  messageId   String
+  userId      String
+  isDelivered Boolean
+  isRead      Boolean
+  deliveredAt DateTime
+  readAt      DateTime
+  message     Message  @relation(fields: [messageId], references: [id])
+
+  @@unique([messageId, userId])
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  messageId String
+  fileType  String
+  fileUrl   String
+  createdAt DateTime @default(now())
+  thumbnail String?
+  message   Message  @relation(fields: [messageId], references: [id])
+}
+
+// model Contact {
+//   id         String   @id @default(uuid())
+//   userId     String
+//   contactId  String
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+//   isFavorite Boolean  @default(false)
+//   isBlocked  Boolean  @default(false)
+//   user       User     @relation(fields: [userId], references: [id], name: "UserContact")
+//   contact    User     @relation(fields: [contactId], references: [id], name: "ContactUserRelation")
+//   User       User     @relation(fields: [userId], references: [id])
+// }
+
+// message_reactions
+// - reaction_id (PK)
+// - message_id (FK -> messages.message_id)
+// - user_id (FK -> users.user_id)
+// - reaction_type (e.g., 'like', 'heart', 'laugh')
+// - created_at
+
+model MessageReaction {
+  id           String   @id @default(uuid())
+  messageId    String
+  userId       String
+  reactionType String
+  createdAt    DateTime @default(now())
+  message      Message  @relation(fields: [messageId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
 }
