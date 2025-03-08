@@ -1,5 +1,4 @@
 import express from "express";
-import { WebSocketServer } from "ws";
 import passport from "passport";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -8,12 +7,11 @@ import cookieSession from "cookie-session";
 dotenv.config();
 
 import "./config/passportConfig";
-import { connectToDatabase } from "./db/db";
 import authRouter from "./routes/auth.route";
 import errorHandler from "./middlewares/errorHandler.middleware";
-import ServerManager from "./managers/serverManager";
+import ServerManager from "./managers/ServerManager";
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT ?? 8000;
 
 cors({
   origin: ["http://localhost:5173"],
@@ -58,7 +56,6 @@ app.use("/api/auth", authRouter);
 app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
-  connectToDatabase();
   console.log(`http://localhost:${PORT}`);
 });
 

@@ -2,8 +2,7 @@ import passport, { DoneCallback } from "passport";
 import { Strategy as GithubStrategy, Profile } from "passport-github2";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
-
-import { pool } from "../db/db";
+import prisma from "./db/prisma";
 
 passport.use(
   new GithubStrategy(
@@ -19,25 +18,29 @@ passport.use(
       done: DoneCallback
     ) => {
       try {
-        let user;
-        const response = await pool.query(
-          `select name, email, profile_picture from users where email = $1`,
-          [profile.emails?.[0].value]
-        );
-        if (response.rows.length > 0) {
-          user = response.rows[0];
+        const user = await prisma.user.findFirst({
+          where : {
+            email : profile.emails?.[0].value
+          },
+          omit: {
+            password: true
+          }
+        })
+        if (user) {
           done(null, user);
         } else {
-          const result = await pool.query(
-            "INSERT INTO users (name, email, profile_picture, third_party_login ) VALUES ($1, $2, $3, TRUE) RETURNING name, email, profile_picture",
-            [
-              profile.displayName,
-              profile.emails?.[0].value,
-              profile.photos?.[0].value,
-            ]
-          );
-          user = result.rows[0];
-          done(null, user);
+          const newUser = await prisma.user.create({
+            data: {
+              name: profile.displayName,
+              email: profile.emails?.[0].value!,
+              thirdPartyLogin: true,
+            },
+            omit: {
+              password: true
+            }
+          })
+         
+          done(null, newUser);
         }
       } catch (error) {
         console.log("GITHUB STRATEGY ERROR : " + error);
@@ -58,23 +61,22 @@ passport.use(
     { usernameField: "email", passwordField: "password" },
     async (email, password, done) => {
       try {
-        const response = await pool.query(
-          `select name, email, profile_picture, third_party_login, password from users where email = $1`,
-          [email]
-        );
-        if (response.rows.length > 0) {
-          const user = response.rows[0];
-
+        const user = await prisma.user.findFirst({
+          where : {
+            email
+          }
+        })
+        if (user) {
           // user exists but it was created by third party login
-          if (user.third_party_login) {
+          if (user.thirdPartyLogin) {
             done(
-              { errorFrom: "passport", error: { message: "User not found." } },
+              { errorFrom: "passport", error: { message: "account is created using socials login" } },
               false
             );
           }
           const isPasswordCorrect = await bcrypt.compare(
             password,
-            user.password
+            user.password!
           );
 
           // if password is incorrect
@@ -90,8 +92,7 @@ passport.use(
 
           // https://stackoverflow.com/questions/35452844/how-to-show-custom-error-messages-using-passport-and-express
           // https://stackoverflow.com/questions/63152640/passport-js-sessions-react-accessing-req-user-from-any-route-other-than-th
-
-          done(null, response.rows[0]);
+          done(null, { id : user.id, email: user.email, name: user.name, thirdPartyLogin: user.thirdPartyLogin, createdAt: user.createdAt, updatedAt: user.updatedAt});
         } else {
           done(
             {
