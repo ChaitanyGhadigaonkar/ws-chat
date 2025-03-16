@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import { registerUser } from "../controllers/auth.controller";
 
 const authRouter = Router();
 
@@ -18,13 +19,15 @@ authRouter.get(
   }
 );
 
+authRouter.post("/email-password/register", registerUser);
+
 authRouter.post(
   "/email-password/login",
   passport.authenticate("local", {
     failureRedirect: "/api/auth/email-password/login",
   }),
   (req, res) => {
-    res.redirect("/api/auth/profile");
+    res.status(200).json({ success: true, message: "logged in successfully" });
   }
 );
 

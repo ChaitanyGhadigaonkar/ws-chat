@@ -3,6 +3,7 @@ import { Strategy as GithubStrategy, Profile } from "passport-github2";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
 import prisma from "./db/prisma";
+import { LOGIN_SCHEMA } from "../schema/auth";
 
 passport.use(
   new GithubStrategy(
@@ -19,13 +20,13 @@ passport.use(
     ) => {
       try {
         const user = await prisma.user.findFirst({
-          where : {
-            email : profile.emails?.[0].value
+          where: {
+            email: profile.emails?.[0].value,
           },
           omit: {
-            password: true
-          }
-        })
+            password: true,
+          },
+        });
         if (user) {
           done(null, user);
         } else {
@@ -36,10 +37,10 @@ passport.use(
               thirdPartyLogin: true,
             },
             omit: {
-              password: true
-            }
-          })
-         
+              password: true,
+            },
+          });
+
           done(null, newUser);
         }
       } catch (error) {
@@ -61,21 +62,29 @@ passport.use(
     { usernameField: "email", passwordField: "password" },
     async (email, password, done) => {
       try {
+        const validate = LOGIN_SCHEMA.validate({ email, password });
+        if (validate.error) {
+          throw new Error(validate.error.message);
+        }
+
         const user = await prisma.user.findFirst({
-          where : {
-            email
-          }
-        })
+          where: {
+            email: validate.value.email,
+          },
+        });
         if (user) {
           // user exists but it was created by third party login
           if (user.thirdPartyLogin) {
             done(
-              { errorFrom: "passport", error: { message: "account is created using socials login" } },
+              {
+                errorFrom: "passport",
+                error: { message: "account is created using socials login" },
+              },
               false
             );
           }
           const isPasswordCorrect = await bcrypt.compare(
-            password,
+            validate.value.password,
             user.password!
           );
 
@@ -92,7 +101,14 @@ passport.use(
 
           // https://stackoverflow.com/questions/35452844/how-to-show-custom-error-messages-using-passport-and-express
           // https://stackoverflow.com/questions/63152640/passport-js-sessions-react-accessing-req-user-from-any-route-other-than-th
-          done(null, { id : user.id, email: user.email, name: user.name, thirdPartyLogin: user.thirdPartyLogin, createdAt: user.createdAt, updatedAt: user.updatedAt});
+          done(null, {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            thirdPartyLogin: user.thirdPartyLogin,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          });
         } else {
           done(
             {
