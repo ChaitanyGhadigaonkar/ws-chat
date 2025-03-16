@@ -3,25 +3,55 @@ import { createTheme } from "@mui/material";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#6e00ff",
-      light: "#dab9f6",
+      main: "#0147ff",
+      light:"#6d8cda"
     },
     secondary: {
-      main: "#eff6fc",
+      main: "#f6f8fc",
     },
     error: {
-      main: "#f24e1e",
+      main: "#c13d3c",
+    },
+    text: {
+      primary: "#212121",
+      secondary: "#333333", // "#333333",
+    },
+    success: {
+      main: "#47ac71"
     },
   },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 425,
-      md: 768,
-      lg: 1024,
-      xl: 1200,
+  typography:{
+    allVariants:{
+      fontFamily: "Poppins, sans-serif",
+      fontWeight: 400,
+      color :"text.primary"
     },
+    h3: {
+      fontSize: "clamp(1.6rem, 2.5vw, 2.4rem)"
+    },
+    h5: {
+      fontSize: "clamp(1rem, 2.5vw, 1.3rem)"
+    },
+    subtitle2: {
+       fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)"
+    }
   },
+  components:{
+    MuiButton: {
+      styleOverrides:{
+        root:{
+          textTransform: "none"
+        }
+      }
+    },
+    MuiInputBase:{
+      styleOverrides:{
+        root : {
+          fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)"
+        }
+      }
+    }
+  }
 });
 
 export default theme;
