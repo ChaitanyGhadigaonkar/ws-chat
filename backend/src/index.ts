@@ -13,13 +13,15 @@ import ServerManager from "./managers/ServerManager";
 
 const PORT = process.env.PORT ?? 8000;
 
-cors({
-  origin: ["http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-});
-
 const app = express();
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+)
 
 app.use(
   cookieSession({

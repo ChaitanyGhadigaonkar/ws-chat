@@ -14,7 +14,7 @@ authRouter.get(
   "/github/callback",
   passport.authenticate("github"),
   (req, res) => {
-    res.redirect("/api/auth/profile");
+    res.redirect("http://localhost:5173/main/chats");
   }
 );
 
