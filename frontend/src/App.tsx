@@ -3,12 +3,20 @@ import { RouterProvider } from "react-router-dom";
 
 import router from "./routes/routes";
 import theme from "./theme/theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SnackbarContextProvider } from "./context/SnackbarContext";
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <SnackbarContextProvider>
+        <ThemeProvider theme={theme}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </SnackbarContextProvider>
+    </QueryClientProvider>
   );
 }
 

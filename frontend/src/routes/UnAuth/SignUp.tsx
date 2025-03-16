@@ -5,6 +5,8 @@ import { FormEvent, useCallback, useState } from "react";
 import InputField from "../../components/InputField";
 import { SIGNUP_SCHEMA } from "../../schema/auth";
 import { Link } from "react-router-dom";
+import useAuthentication from "../../hooks/useAuthentication";
+import { useSnackbarContext } from "../../context/SnackbarContext";
 
 type SignUpState = {
   name: string;
@@ -21,6 +23,9 @@ export default function SignUp() {
 
   const [errors, setErrors] = useState<Partial<SignUpState>>({});
 
+  const { registerUser, registerUserPending } = useAuthentication();
+  const { openSnackbar } = useSnackbarContext();
+
   const handleChange = useCallback(
     (field: keyof SignUpState, value: SignUpState[keyof SignUpState]) => {
       setSignUpState((prev) => ({ ...prev, [field]: value }));
@@ -34,8 +39,9 @@ export default function SignUp() {
     },
     []
   );
+
   const handleSignUp = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setErrors({});
       const validate = SIGNUP_SCHEMA.validate(signUpState);
@@ -45,6 +51,13 @@ export default function SignUp() {
           validate.error.details[0].message
         );
       } else {
+        try {
+          await registerUser(validate.value);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            openSnackbar("error", error.message);
+          }
+        }
       }
     },
     [signUpState, handleErrors]
@@ -141,6 +154,8 @@ export default function SignUp() {
                 variant="contained"
                 fullWidth
                 disableElevation
+                loading={registerUserPending}
+                disabled={registerUserPending}
                 sx={{
                   py: 1.25,
                   borderRadius: 1.5,
