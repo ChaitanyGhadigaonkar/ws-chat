@@ -101,9 +101,6 @@ export default function Login() {
                 value={loginState.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 errorText={errors.email}
-                InputProps={{
-                  sx: { borderRadius: 1.5 },
-                }}
               />
             </Grid>
 
@@ -119,9 +116,6 @@ export default function Login() {
                 value={loginState.password}
                 onChange={(e) => handleChange("password", e.target.value)}
                 errorText={errors.password}
-                InputProps={{
-                  sx: { borderRadius: 1.5 },
-                }}
               />
             </Grid>
 
