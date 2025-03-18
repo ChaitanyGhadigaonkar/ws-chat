@@ -1,16 +1,13 @@
-import { useEffect } from "react";
-import API_INSTANCE from "../../api/api";
 import Grid from "../../components/Grid";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import useAuthentication from "../../hooks/useAuthentication";
 
 const AuthLayout = () => {
-  useEffect(() => {
-    (async () => {
-      console.log(
-        await API_INSTANCE.get("/api/auth/profile", { withCredentials: true })
-      );
-    })();
-  }, []);
+  const { user } = useAuthentication();
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
   return (
     <Grid container size={12}>
       <Outlet />

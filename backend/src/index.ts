@@ -21,12 +21,16 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
-)
+);
 
 app.use(
   cookieSession({
     keys: [process.env.COOKIE_SECRET!],
     maxAge: 24 * 60 * 60 * 1000,
+    domain: "localhost",
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
   })
 );
 

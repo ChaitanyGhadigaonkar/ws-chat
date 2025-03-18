@@ -1,11 +1,24 @@
-
-
 export type SignUpInput = {
-    name : string,
-    email : string,
-    password : string
-}
+  name: string;
+  email: string;
+  password: string;
+};
 
-export type SignUpOutput ={
+export type LoginInput = {
+  name: string;
+  email: string;
+  password: string;
+};
 
-}
+export type FetchUserDetailsOutput = {
+  user: User | null;
+};
+
+export type User = {
+  id: string;
+  email: string;
+  name: string;
+  thirdPartyLogin: boolean;
+  createdAt: string;
+  updatedAt: string | undefined;
+};

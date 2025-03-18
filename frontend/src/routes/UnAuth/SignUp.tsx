@@ -55,7 +55,7 @@ export default function SignUp() {
           await registerUser(validate.value);
         } catch (error: unknown) {
           if (error instanceof Error) {
-            openSnackbar("error", error.message);
+            openSnackbar("failed", error.message);
           }
         }
       }

@@ -23,6 +23,7 @@ function SlideTransition(props: SlideProps) {
 }
 
 const SnackbarContext = createContext({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   openSnackbar: (_type: SERVER_RESPONSE_STATUS, _message: string) => {},
 });
 
@@ -31,6 +32,7 @@ const SnackbarContextProvider = ({ children }: { children: ReactNode }) => {
     open: boolean;
     Transition: ComponentType<
       TransitionProps & {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         children: ReactElement<any, any>;
       }
     >;
@@ -70,7 +72,7 @@ const SnackbarContextProvider = ({ children }: { children: ReactNode }) => {
       >
         <Alert
           onClose={handleClose}
-          severity={type}
+          severity={type === "failed" ? "error" : "success"}
           variant="filled"
           sx={{ width: "100%" }}
         >
@@ -86,4 +88,5 @@ const useSnackbarContext = () => {
   return useContext(SnackbarContext);
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { SnackbarContextProvider, useSnackbarContext };

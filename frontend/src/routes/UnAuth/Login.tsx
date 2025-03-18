@@ -5,6 +5,8 @@ import { FormEvent, useCallback, useState } from "react";
 import InputField from "../../components/InputField";
 import { LOGIN_SCHEMA } from "../../schema/auth";
 import { Link } from "react-router-dom";
+import { useSnackbarContext } from "../../context/SnackbarContext";
+import useAuthentication from "../../hooks/useAuthentication";
 
 type LoginState = {
   email: string;
@@ -17,6 +19,8 @@ export default function Login() {
   });
 
   const [errors, setErrors] = useState<Partial<LoginState>>({});
+  const { openSnackbar } = useSnackbarContext();
+  const { loginUserPending, loginUser } = useAuthentication();
 
   const handleChange = useCallback(
     (field: keyof LoginState, value: LoginState[keyof LoginState]) => {
@@ -32,7 +36,7 @@ export default function Login() {
     []
   );
   const handleLogin = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setErrors({});
       const validate = LOGIN_SCHEMA.validate(loginState);
@@ -42,6 +46,13 @@ export default function Login() {
           validate.error.details[0].message
         );
       } else {
+        try {
+          await loginUser(validate.value);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            openSnackbar("failed", error.message);
+          }
+        }
       }
     },
     [loginState, handleErrors]
@@ -125,6 +136,8 @@ export default function Login() {
                 variant="contained"
                 fullWidth
                 disableElevation
+                disabled={loginUserPending}
+                loading={loginUserPending}
                 sx={{
                   py: 1.25,
                   borderRadius: 1.5,

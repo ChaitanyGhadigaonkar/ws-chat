@@ -33,7 +33,11 @@ authRouter.post(
 
 authRouter.get("/profile", (req, res) => {
   if (req.isAuthenticated()) {
-    res.status(200).json({ success: true, user: req.user });
+    res.status(200).json({
+      success: true,
+      user: req.user,
+      message: "user details fetched successfully",
+    });
   } else {
     res.status(401).json({ success: false, message: "Not authenticated" });
   }
@@ -44,7 +48,7 @@ authRouter.get("/logout", (req, res) => {
     if (err) {
       console.log("GITHUB LOGOUT ERROR : " + err);
     }
-    res.redirect("/");
+    res.status(200).json({ success: false, message: "logout sucessfully." });
   });
 });
 

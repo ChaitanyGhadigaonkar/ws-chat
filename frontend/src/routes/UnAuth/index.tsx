@@ -1,7 +1,14 @@
 import { Outlet } from "react-router-dom";
 import Grid from "../../components/Grid";
+import useAuthentication from "../../hooks/useAuthentication";
+import { Navigate } from "react-router-dom";
 
 const UnAuthLayout = () => {
+  const { user } = useAuthentication();
+
+  if (user) {
+    return <Navigate to={"/main/chats"} />;
+  }
   return (
     <Grid
       container

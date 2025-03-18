@@ -1,21 +1,43 @@
 import { ThemeProvider } from "@mui/material";
-import { RouterProvider } from "react-router-dom";
-
-import router from "./routes/routes";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import theme from "./theme/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarContextProvider } from "./context/SnackbarContext";
+import { AuthContextProvider } from "./context/AuthContext";
+import UnAuthLayout from "./routes/UnAuth";
+import Login from "./routes/UnAuth/Login";
+import SignUp from "./routes/UnAuth/SignUp";
+import Dashboard from "./routes/Auth/Dashboard";
+import AuthLayout from "./routes/Auth";
 
 function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SnackbarContextProvider>
-        <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
-        </ThemeProvider>
-      </SnackbarContextProvider>
+      <AuthContextProvider>
+        <BrowserRouter>
+          <SnackbarContextProvider>
+            <ThemeProvider theme={theme}>
+              <Routes>
+                <Route path="/" element={<UnAuthLayout />}>
+                  <Route path="login" element={<Login />} />
+                  <Route path="sign-up" element={<SignUp />} />
+                </Route>
+                <Route path="/main" element={<AuthLayout />}>
+                  <Route path="chats" element={<Dashboard />} />
+                </Route>
+              </Routes>
+            </ThemeProvider>
+          </SnackbarContextProvider>
+        </BrowserRouter>
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 }
