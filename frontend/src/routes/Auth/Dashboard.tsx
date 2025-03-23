@@ -11,6 +11,7 @@ const Dashboard = () => {
   const handleLogout = useCallback(async () => {
     try {
       await logoutUser();
+      window.location.reload();
     } catch (error: unknown) {
       if (error instanceof Error) {
         openSnackbar("failed", error.message);

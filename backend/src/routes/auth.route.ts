@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { registerUser } from "../controllers/auth.controller";
+import checkAuth from "../middlewares/auth.middleware";
 
 const authRouter = Router();
 
@@ -24,31 +25,29 @@ authRouter.post("/email-password/register", registerUser);
 authRouter.post(
   "/email-password/login",
   passport.authenticate("local", {
-    failureRedirect: "/api/auth/email-password/login",
+    failWithError: true,
+    failureMessage: "Failed to login",
   }),
   (req, res) => {
     res.status(200).json({ success: true, message: "logged in successfully" });
   }
 );
 
-authRouter.get("/profile", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.status(200).json({
-      success: true,
-      user: req.user,
-      message: "user details fetched successfully",
-    });
-  } else {
-    res.status(401).json({ success: false, message: "Not authenticated" });
-  }
+authRouter.get("/profile", checkAuth, (req, res) => {
+  res.status(200).json({
+    success: true,
+    user: req.user,
+    message: "user details fetched successfully",
+  });
 });
 
 authRouter.get("/logout", (req, res) => {
   req.logout(function (err) {
     if (err) {
       console.log("GITHUB LOGOUT ERROR : " + err);
+      throw new Error("Failed login with error");
     }
-    res.status(200).json({ success: false, message: "logout sucessfully." });
+    res.status(200).json({ success: true, message: "logout sucessfully." });
   });
 });
 

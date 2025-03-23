@@ -28,7 +28,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     useQuery<Output<FetchUserDetailsOutput>>({
       queryKey: ["userDetails"],
       queryFn: () => fetchUserDetails(),
-      enabled: !localStorage.getItem("isAuthenticated"),
+      retry: false,
     });
 
   return (

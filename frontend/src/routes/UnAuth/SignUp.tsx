@@ -7,6 +7,7 @@ import { SIGNUP_SCHEMA } from "../../schema/auth";
 import { Link } from "react-router-dom";
 import useAuthentication from "../../hooks/useAuthentication";
 import { useSnackbarContext } from "../../context/SnackbarContext";
+import { useNavigate } from "react-router-dom";
 
 type SignUpState = {
   name: string;
@@ -25,6 +26,7 @@ export default function SignUp() {
 
   const { registerUser, registerUserPending } = useAuthentication();
   const { openSnackbar } = useSnackbarContext();
+  const navigate = useNavigate();
 
   const handleChange = useCallback(
     (field: keyof SignUpState, value: SignUpState[keyof SignUpState]) => {
@@ -53,6 +55,8 @@ export default function SignUp() {
       } else {
         try {
           await registerUser(validate.value);
+          setSignUpState({ name: "", email: "", password: "" });
+          navigate("/login");
         } catch (error: unknown) {
           if (error instanceof Error) {
             openSnackbar("failed", error.message);

@@ -4,9 +4,10 @@ import Grid from "../../components/Grid";
 import { FormEvent, useCallback, useState } from "react";
 import InputField from "../../components/InputField";
 import { LOGIN_SCHEMA } from "../../schema/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSnackbarContext } from "../../context/SnackbarContext";
 import useAuthentication from "../../hooks/useAuthentication";
+import { BACKEND_URL } from "../../utils/constants";
 
 type LoginState = {
   email: string;
@@ -21,6 +22,7 @@ export default function Login() {
   const [errors, setErrors] = useState<Partial<LoginState>>({});
   const { openSnackbar } = useSnackbarContext();
   const { loginUserPending, loginUser } = useAuthentication();
+  const navigate = useNavigate();
 
   const handleChange = useCallback(
     (field: keyof LoginState, value: LoginState[keyof LoginState]) => {
@@ -35,6 +37,11 @@ export default function Login() {
     },
     []
   );
+
+  const handleGithubLogin = useCallback(() => {
+    window.location.href = `${BACKEND_URL}/auth/github`;
+  }, []);
+
   const handleLogin = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -48,6 +55,7 @@ export default function Login() {
       } else {
         try {
           await loginUser(validate.value);
+          navigate("/main/chats");
         } catch (error: unknown) {
           if (error instanceof Error) {
             openSnackbar("failed", error.message);
@@ -55,7 +63,7 @@ export default function Login() {
         }
       }
     },
-    [loginState, handleErrors]
+    [loginState, handleErrors, openSnackbar, loginUser, navigate]
   );
 
   return (
@@ -195,7 +203,7 @@ export default function Login() {
             sx={{ mt: 1 }}
           >
             <IconButton
-              onClick={() => {}}
+              onClick={handleGithubLogin}
               sx={{
                 border: "1px solid rgba(0, 0, 0, 0.12)",
                 borderRadius: 1.5,

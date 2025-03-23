@@ -9,6 +9,7 @@ import Login from "./routes/UnAuth/Login";
 import SignUp from "./routes/UnAuth/SignUp";
 import Dashboard from "./routes/Auth/Dashboard";
 import AuthLayout from "./routes/Auth";
+import Layout from "./routes/Layout";
 
 function App() {
   const queryClient = new QueryClient({
@@ -26,12 +27,14 @@ function App() {
           <SnackbarContextProvider>
             <ThemeProvider theme={theme}>
               <Routes>
-                <Route path="/" element={<UnAuthLayout />}>
-                  <Route path="login" element={<Login />} />
-                  <Route path="sign-up" element={<SignUp />} />
-                </Route>
-                <Route path="/main" element={<AuthLayout />}>
-                  <Route path="chats" element={<Dashboard />} />
+                <Route path="/" element={<Layout />}>
+                  <Route path="" element={<UnAuthLayout />}>
+                    <Route path="login" element={<Login />} />
+                    <Route path="sign-up" element={<SignUp />} />
+                  </Route>
+                  <Route path="/main" element={<AuthLayout />}>
+                    <Route path="chats" element={<Dashboard />} />
+                  </Route>
                 </Route>
               </Routes>
             </ThemeProvider>

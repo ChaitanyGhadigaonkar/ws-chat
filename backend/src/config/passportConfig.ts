@@ -78,7 +78,7 @@ passport.use(
             done(
               {
                 errorFrom: "passport",
-                error: { message: "account is created using socials login" },
+                error: { message: "Account is created using socials login" },
               },
               false
             );
@@ -114,7 +114,8 @@ passport.use(
             {
               errorFrom: "passport",
               error: {
-                message: "something went's wrong.",
+                message:
+                  "No User found with this email. Please register first.",
               },
             },
             false

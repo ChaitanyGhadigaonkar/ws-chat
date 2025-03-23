@@ -8,9 +8,9 @@ import { AuthContext } from "../context/AuthContext";
 
 const useAuthentication = () => {
   const { openSnackbar } = useSnackbarContext();
-  const queryClient = useQueryClient();
 
   const { user, fetchUserDetailsLoading } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
   const signUpMutate = useCallback(
     async (variables: SignUpInput): Promise<Output<unknown>> => {
@@ -59,7 +59,7 @@ const useAuthentication = () => {
     mutationFn: (variables) => loginMutate(variables),
     onSuccess: (data) => {
       if (data.success) {
-        localStorage.setItem("isAuthenticated", "true");
+        queryClient.invalidateQueries({ queryKey: ["userDetails"] });
       }
       if (data.message) {
         openSnackbar("success", data.message);
@@ -85,8 +85,6 @@ const useAuthentication = () => {
     onSuccess: (data) => {
       if (data.success) {
         queryClient.invalidateQueries({ queryKey: ["userDetails"] });
-
-        localStorage.clear();
       }
       if (data.message) {
         openSnackbar("success", data.message);

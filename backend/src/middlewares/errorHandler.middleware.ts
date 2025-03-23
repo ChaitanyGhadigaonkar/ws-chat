@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "joi";
 
-interface PassportError extends Error {
-  status?: number;
-  statusCode?: number;
+interface PassportError {
   errorFrom?: string;
-  name: string;
-  message: string;
+  error: { message: string };
+}
+
+function isPassportError(error: any): error is PassportError {
+  return error && typeof error === "object" && "errorFrom" in error;
 }
 
 const errorHandler = (
@@ -15,31 +16,36 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = res.statusCode === 200 ? 400 : res.statusCode;
+  const statusCode = res.statusCode !== 200 ? res.statusCode : 400;
   res.status(statusCode);
+  console.log(err);
+  let errorResponse: any = null;
+  let errorMessage: string = "An unexpected error occurred";
 
-  let errorResponse;
-  let errorMessage;
-
-  if (err instanceof Error) {
-    // if (err instanceof PrismaClientValidationError) {
-    //   errorMessage = err.message + err.name;
-    // }
-
-    const passportError = err as PassportError;
-    if (passportError.errorFrom === "passport") {
-      if (passportError.message) {
-        errorMessage = passportError.message;
-      }
+  if (isPassportError(err)) {
+    if (err.errorFrom === "passport") {
+      errorMessage = err.error.message || "Authentication error";
+      errorResponse = {
+        type: "authentication_error",
+        code: statusCode,
+      };
     }
-
-    if ((err as any).isJoi) {
-      if (err instanceof ValidationError) {
-        errorMessage = err.message;
-      }
+  } else if (err instanceof Error) {
+    if ((err as any).isJoi && err instanceof ValidationError) {
+      errorMessage = err.message;
+      errorResponse = {
+        type: "validation_error",
+        details: err.details,
+      };
+    } else {
+      errorMessage = err.message;
+      errorResponse = {
+        type: "general_error",
+        name: err.name,
+      };
     }
-
-    errorMessage = err.message;
+  } else {
+    errorMessage = String(err);
   }
 
   res.json({
