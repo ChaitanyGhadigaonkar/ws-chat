@@ -42,7 +42,7 @@ authRouter.get("/profile", checkAuth, (req, res) => {
 });
 
 authRouter.get("/logout", (req, res) => {
-  req.logout(function (err) {
+  req.logOut({ keepSessionInfo: false }, function (err) {
     if (err) {
       console.log("GITHUB LOGOUT ERROR : " + err);
       throw new Error("Failed login with error");

@@ -24,12 +24,14 @@ const registerUser = expressAsyncHandler(async (req, res) => {
       name,
       password: hashedPassword,
       thirdPartyLogin: false,
+      Profile: {
+        create: {},
+      },
     },
     omit: {
       password: true,
     },
   });
-  // TODO: create profile
   res.status(201).json({
     success: true,
     message: "User registered successfully",
