@@ -16,9 +16,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 400;
-  res.status(statusCode);
-  console.log(err);
+  let statusCode = res.statusCode !== 200 ? res.statusCode : 400;
   let errorResponse: any = null;
   let errorMessage: string = "An unexpected error occurred";
 
@@ -37,6 +35,7 @@ const errorHandler = (
         type: "validation_error",
         details: err.details,
       };
+      statusCode = 400; // bad request
     } else {
       errorMessage = err.message;
       errorResponse = {
@@ -47,6 +46,8 @@ const errorHandler = (
   } else {
     errorMessage = String(err);
   }
+
+  res.status(statusCode);
 
   res.json({
     success: false,

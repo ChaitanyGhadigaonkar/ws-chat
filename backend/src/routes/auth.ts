@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
-import { registerUser } from "../controllers/auth.controller";
-import checkAuth from "../middlewares/auth.middleware";
+import { registerUser } from "../controllers/auth";
+import checkAuth from "../middlewares/auth";
 
 const authRouter = Router();
 

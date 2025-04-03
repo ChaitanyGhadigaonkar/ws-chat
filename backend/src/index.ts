@@ -6,10 +6,11 @@ import cookieSession from "cookie-session";
 
 dotenv.config();
 
-import "./config/passportConfig";
-import authRouter from "./routes/auth.route";
-import errorHandler from "./middlewares/errorHandler.middleware";
+import "./config/passport";
+import authRouter from "./routes/auth";
+import errorHandler from "./middlewares/errorHandler";
 import ServerManager from "./managers/ServerManager";
+import contactRouter from "./routes/contact";
 
 const PORT = process.env.PORT ?? 8000;
 
@@ -58,6 +59,7 @@ app.get("/", async (req, res) => {
   res.send("Welcome");
 });
 app.use("/api/auth", authRouter);
+app.use("/api/contacts", contactRouter);
 
 app.use(errorHandler);
 

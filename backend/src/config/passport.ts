@@ -4,6 +4,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
 import prisma from "./db/prisma";
 import { LOGIN_SCHEMA } from "../schema/auth";
+import { User } from "@prisma/client";
 
 passport.use(
   new GithubStrategy(
@@ -142,6 +143,17 @@ passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.deserializeUser((userId: string, done) => {
-  done(null, userId);
+passport.deserializeUser(async (user: User, done) => {
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: { id: user?.id! },
+    });
+    if (foundUser) {
+      done(null, foundUser);
+    } else {
+      done(null, null);
+    }
+  } catch (error) {
+    done(error, null);
+  }
 });

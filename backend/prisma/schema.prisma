@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
@@ -37,6 +38,8 @@ model User {
   Participant     Participant[]
   Message         Message[]
   MessageReaction MessageReaction[]
+  Contact         Contact[]         @relation("user")
+  ContactUser     Contact[]         @relation("contactUser")
 }
 
 model Profile {
@@ -118,25 +121,17 @@ model Attachment {
   message   Message  @relation(fields: [messageId], references: [id])
 }
 
-// model Contact {
-//   id         String   @id @default(uuid())
-//   userId     String
-//   contactId  String
-//   createdAt  DateTime @default(now())
-//   updatedAt  DateTime @updatedAt
-//   isFavorite Boolean  @default(false)
-//   isBlocked  Boolean  @default(false)
-//   user       User     @relation(fields: [userId], references: [id], name: "UserContact")
-//   contact    User     @relation(fields: [contactId], references: [id], name: "ContactUserRelation")
-//   User       User     @relation(fields: [userId], references: [id])
-// }
-
-// message_reactions
-// - reaction_id (PK)
-// - message_id (FK -> messages.message_id)
-// - user_id (FK -> users.user_id)
-// - reaction_type (e.g., 'like', 'heart', 'laugh')
-// - created_at
+model Contact {
+  id            String   @id @default(uuid())
+  userId        String
+  contactUserId String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  isFavorite    Boolean  @default(false)
+  isBlocked     Boolean  @default(false)
+  user          User     @relation("user", fields: [userId], references: [id])
+  contactUser   User     @relation("contactUser", fields: [contactUserId], references: [id])
+}
 
 model MessageReaction {
   id           String   @id @default(uuid())
