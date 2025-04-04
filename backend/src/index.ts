@@ -11,6 +11,7 @@ import authRouter from "./routes/auth";
 import errorHandler from "./middlewares/errorHandler";
 import ServerManager from "./managers/ServerManager";
 import contactRouter from "./routes/contact";
+import prisma from "./config/db/prisma";
 
 const PORT = process.env.PORT ?? 8000;
 
@@ -63,8 +64,10 @@ app.use("/api/contacts", contactRouter);
 
 app.use(errorHandler);
 
-const server = app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}`);
+const server = app.listen(PORT, async () => {
+  await prisma.$connect();
+  console.log("✅ db connected sucessfully");
+  console.log(`✅ http://localhost:${PORT}`);
 });
 
 const wss = ServerManager.getServer(server);
