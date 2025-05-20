@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@mui/material";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import theme from "./theme/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarContextProvider } from "./context/SnackbarContext";
@@ -9,7 +9,8 @@ import Login from "./routes/UnAuth/Login";
 import SignUp from "./routes/UnAuth/SignUp";
 import Dashboard from "./routes/Auth/Dashboard";
 import AuthLayout from "./routes/Auth";
-import Layout from "./routes/Layout";
+import PublicRoute from "./routes/PublicRoute";
+import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
   const queryClient = new QueryClient({
@@ -20,26 +21,59 @@ function App() {
     },
   });
 
+  const router = createBrowserRouter([
+    {
+      element: <UnAuthLayout />,
+      children: [
+        {
+          path: "/",
+          element: (
+            <PublicRoute>
+              <>Home Page</>
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/login",
+          element: (
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/sign-up",
+          element: (
+            <PublicRoute>
+              <SignUp />
+            </PublicRoute>
+          ),
+        },
+      ],
+    },
+    {
+      element: <AuthLayout />,
+      children: [
+        {
+          path: "/main/chats",
+          element: (
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          ),
+        },
+      ],
+    },
+  ]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
-        <BrowserRouter>
-          <SnackbarContextProvider>
-            <ThemeProvider theme={theme}>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route path="" element={<UnAuthLayout />}>
-                    <Route path="login" element={<Login />} />
-                    <Route path="sign-up" element={<SignUp />} />
-                  </Route>
-                  <Route path="/main" element={<AuthLayout />}>
-                    <Route path="chats" element={<Dashboard />} />
-                  </Route>
-                </Route>
-              </Routes>
-            </ThemeProvider>
-          </SnackbarContextProvider>
-        </BrowserRouter>
+        <SnackbarContextProvider>
+          <ThemeProvider theme={theme}>
+            <RouterProvider router={router} />
+          </ThemeProvider>
+        </SnackbarContextProvider>
       </AuthContextProvider>
     </QueryClientProvider>
   );
