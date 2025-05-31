@@ -4,7 +4,7 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#0147ff",
-      light:"#6d8cda"
+      light: "#6d8cda",
     },
     secondary: {
       main: "#f6f8fc",
@@ -13,45 +13,48 @@ const theme = createTheme({
       main: "#c13d3c",
     },
     text: {
-      primary: "#212121",
-      secondary: "#333333", // "#333333",
+      primary: "#313131",
+      secondary: "#616161",
     },
     success: {
-      main: "#47ac71"
+      main: "#47ac71",
     },
   },
-  typography:{
-    allVariants:{
+  typography: {
+    allVariants: {
       fontFamily: "Poppins, sans-serif",
       fontWeight: 400,
-      color :"text.primary"
+      color: "text.primary",
     },
     h3: {
-      fontSize: "clamp(1.6rem, 2.5vw, 2.4rem)"
+      fontSize: "clamp(1.6rem, 1.5vw + 0.5rem, 2.4rem)",
     },
     h5: {
-      fontSize: "clamp(1rem, 2.5vw, 1.3rem)"
+      fontSize: "clamp(1rem, 1.5vw + 0.5rem, 1.3rem)",
+    },
+    subtitle1: {
+      fontSize: "clamp(0.9rem, 1.5vw + 0.5rem, 1rem)",
     },
     subtitle2: {
-       fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)"
-    }
-  },
-  components:{
-    MuiButton: {
-      styleOverrides:{
-        root:{
-          textTransform: "none"
-        }
-      }
+      fontSize: "clamp(0.8rem, 1.5vw + 0.5rem, 0.9rem)",
     },
-    MuiInputBase:{
-      styleOverrides:{
-        root : {
-          fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)"
-        }
-      }
-    }
-  }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          fontSize: "clamp(0.8rem, 1.5vw + 0.5rem, 0.9rem)",
+        },
+      },
+    },
+  },
 });
 
 export default theme;

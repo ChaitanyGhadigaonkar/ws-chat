@@ -1,28 +1,24 @@
-import { Button } from "@mui/material";
+import ChatList from "../../components/List/ChatList";
 import Grid from "../../components/Grid";
-import { useCallback } from "react";
-import useAuthentication from "../../hooks/useAuthentication";
-import { useSnackbarContext } from "../../context/SnackbarContext";
+import ChatDetails from "../../components/Details/ChatDetails";
 
 const Dashboard = () => {
-  const { openSnackbar } = useSnackbarContext();
-  const { logoutUser } = useAuthentication();
-
-  const handleLogout = useCallback(async () => {
-    try {
-      await logoutUser();
-      window.location.reload();
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        openSnackbar("failed", error.message);
-      }
-    }
-  }, [logoutUser, openSnackbar]);
-
   return (
-    <Grid container size={12}>
-      Chat Screen
-      <Button onClick={handleLogout}>Logout</Button>
+    <Grid
+      container
+      size={12}
+      gap={{ xs: "1rem" }}
+      sx={{
+        backgroundColor: "#f9f8fd",
+        minHeight: "100dvh",
+        padding: {
+          xs: "1rem 0.8rem",
+          md: "1rem 2rem",
+        },
+      }}
+    >
+      <ChatList />
+      <ChatDetails />
     </Grid>
   );
 };

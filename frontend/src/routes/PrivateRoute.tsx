@@ -17,7 +17,6 @@ const PrivateRoute: FC<Props> = ({ children }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "100dvh",
         }}
       >
         <CircularProgress sx={{ fontSize: { md: "6rem" } }} />
