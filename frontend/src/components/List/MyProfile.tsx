@@ -10,6 +10,12 @@ const MyProfile = () => {
       height={"fit-content"}
       alignItems={"center"}
       gap={"1rem"}
+      sx={{
+        padding: {
+          xs: "1rem 0.8rem",
+          md: "1rem 2rem",
+        },
+      }}
     >
       <Badge
         badgeContent={""}

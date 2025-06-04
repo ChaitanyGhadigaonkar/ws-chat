@@ -10,7 +10,7 @@ const Dashboard = () => {
       gap={{ xs: "1rem" }}
       sx={{
         backgroundColor: "#f9f8fd",
-        minHeight: "100dvh",
+        height: "100dvh",
         padding: {
           xs: "1rem 0.8rem",
           md: "1rem 2rem",

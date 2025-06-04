@@ -24,7 +24,16 @@ const ChatTabs = () => {
   );
 
   return (
-    <Grid container justifyContent={"center"}>
+    <Grid
+      container
+      justifyContent={"center"}
+      sx={{
+        paddingX: {
+          xs: "0.8rem",
+          md: "2rem",
+        },
+      }}
+    >
       <Tabs
         value={currentTab}
         onChange={handleTabChange}

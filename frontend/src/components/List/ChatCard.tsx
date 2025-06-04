@@ -5,8 +5,21 @@ import { format } from "date-fns";
 
 const ChatCard = () => {
   const hasUnreadMessages = true;
+  const selectedChat = true;
   return (
-    <Grid container direction={"row"} alignItems={"center"} gap={"1rem"}>
+    <Grid
+      container
+      direction={"row"}
+      alignItems={"center"}
+      gap={"1rem"}
+      sx={{
+        ...(selectedChat && { backgroundColor: "#f9f8fd" }),
+        padding: {
+          xs: "0.6rem 0.8rem",
+          md: "0.8rem 2rem",
+        },
+      }}
+    >
       <Badge
         badgeContent={""}
         color="success"
@@ -56,7 +69,7 @@ const ChatCard = () => {
             }}
           >
             <PushPinOutlined fontSize="small" />
-            {format(new Date(), "hh:mmm aa")}
+            {format(new Date(), "hh:mm aa")}
           </Grid>
         </Grid>
 
@@ -76,7 +89,7 @@ const ChatCard = () => {
                 badgeContent="5"
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "right",
+                  horizontal: "left",
                 }}
                 sx={{
                   typography: "body2",
