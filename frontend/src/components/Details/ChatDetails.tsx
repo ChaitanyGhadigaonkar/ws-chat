@@ -1,6 +1,8 @@
 import { IconButton } from "@mui/material";
 import Grid from "../Grid";
 import { MoreVert } from "@mui/icons-material";
+import ChatInput from "./ChatInput";
+import MessagesSection from "./MessagesSection";
 
 const ChatDetails = () => {
   return (
@@ -85,62 +87,7 @@ const ChatDetails = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid
-        flex={1}
-        sx={{ overflowY: "auto", paddingTop: { xs: "0.4rem", md: "1rem" } }}
-      >
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-        <p>Scrollable Middle view</p>
-      </Grid>
+      <MessagesSection />
       <Grid
         sx={{
           position: "sticky",
@@ -149,12 +96,12 @@ const ChatDetails = () => {
           borderBottomLeftRadius: "0.5rem",
           borderBottomRightRadius: "0.5rem",
           padding: {
-            xs: "0.6rem 0.8rem",
-            md: "0.8rem 1rem",
+            xs: "0.6rem 1.6rem",
+            md: "0.6rem 2rem",
           },
         }}
       >
-        Fixed chat input
+        <ChatInput />
       </Grid>
     </Grid>
   );
